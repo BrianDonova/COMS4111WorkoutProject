@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Edit "{{ workout['name'] }}"{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="name">Workout Name</label>
+    <input name="name" id="name" value="{{ request.form['name'] or workout['name'] }}" required>
+    <label for="duration">Duration (minutes)</label>
+    <input name="duration" id="duration" value="{{ request.form['duration'] or workout['duration'] }}" required>
+    <label for="difficulty_level">Difficulty Level</label>
+    <input name="difficulty_level" id="difficulty_level" value="{{ request.form['difficulty_level'] or workout['difficulty_level'] }}" required>
+    <input type="submit" value="Save">
+  </form>
+  <hr>
+  <form action="{{ url_for('workout.delete', id=workout['workout_id']) }}" method="post">
+    <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+  </form>
+{% endblock %}
