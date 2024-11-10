@@ -18,7 +18,6 @@ def create_app(test_config=None):
         # load the test config if passed in
         app.config.from_mapping(test_config)
 
-    # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
     except OSError:
@@ -40,4 +39,24 @@ def create_app(test_config=None):
     app.register_blueprint(workout.bp)
     app.add_url_rule('/', endpoint='index')
 
+    from . import members
+    app.register_blueprint(members.bp)
+
+    from . import progress
+    app.register_blueprint(progress.bp)  
+
+    from . import nutrition
+    app.register_blueprint(nutrition.bp)
+
+    from . import trainer
+    app.register_blueprint(trainer.bp)
+
+    from . import exercise
+    app.register_blueprint(exercise.bp)
+
+    from . import location
+    app.register_blueprint(location.bp)
+
+    from . import equipment
+    app.register_blueprint(equipment.bp)
     return app

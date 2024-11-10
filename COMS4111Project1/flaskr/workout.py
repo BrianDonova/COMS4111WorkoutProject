@@ -15,17 +15,40 @@ bp = Blueprint('workout', __name__)
 @bp.route('/')
 def index():
     db = get_db()
-    with db.cursor(cursor_factory=DictCursor) as cursor:  # Use DictCursor here
+    with db.cursor(cursor_factory=DictCursor) as cursor:
         cursor.execute(
-            'SELECT w.workout_id, w.name, w.duration, w.difficulty_level, m.name AS member_name'
-            ' FROM Workout w JOIN Member m ON w.workout_id = m.member_id'
-            ' ORDER BY w.name'
+            '''
+            SELECT w.workout_id, w.name, w.duration, w.difficulty_level, m.name AS member_name, m.member_id
+            FROM Workout w
+            JOIN Completes c ON w.workout_id = c.workout_id
+            JOIN Member m ON c.member_id = m.member_id
+            ORDER BY w.name;
+            '''
         )
-        workouts = cursor.fetchall()  # Fetch all results as dictionaries
-    
+        workouts = cursor.fetchall()
     return render_template('workout/index.html', workouts=workouts)
 
 
+@bp.route('/<int:id>/view')
+def view(id):
+    db = get_db()
+    with db.cursor(cursor_factory=DictCursor) as cursor:
+      
+        cursor.execute("""
+            SELECT w.workout_id, w.name, w.duration, w.difficulty_level
+            FROM Workout w
+            WHERE w.workout_id = %s;
+        """, (id,))
+        workout = cursor.fetchone()
+
+        cursor.execute("""
+            SELECT e.exercise_id, e.name, e.description, e.reps, e.sets, e.duration
+            FROM Exercises e
+            WHERE e.workout_id = %s;
+        """, (id,))
+        exercises = cursor.fetchall()
+
+    return render_template('workout/view.html', workout=workout, exercises=exercises)
 
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
@@ -43,24 +66,46 @@ def create():
             flash(error)
         else:
             db = get_db()
-            db.execute(
-                'INSERT INTO Workout (name, duration, difficulty_level, member_id)'
-                ' VALUES (?, ?, ?, ?)',
-                (name, duration, difficulty_level, g.user['member_id'])
-            )
+            with db.cursor() as cursor:
+                # Insert the new workout
+                cursor.execute(
+                    '''
+                    INSERT INTO Workout (name, duration, difficulty_level)
+                    VALUES (%s, %s, %s)
+                    RETURNING workout_id;
+                    ''',
+                    (name, duration, difficulty_level)
+                )
+                workout_id = cursor.fetchone()['workout_id']
+
+                # Associate the workout with the member in the Completes table
+                cursor.execute(
+                    '''
+                    INSERT INTO Completes (member_id, workout_id)
+                    VALUES (%s, %s);
+                    ''',
+                    (g.user['member_id'], workout_id)
+                )
             db.commit()
             return redirect(url_for('workout.index'))
 
     return render_template('workout/create.html')
 
 
+
 def get_workout(id, check_author=True):
-    workout = get_db().execute(
-        'SELECT w.workout_id, w.name, w.duration, w.difficulty_level, w.member_id'
-        ' FROM Workout w JOIN Member m ON w.member_id = m.member_id'
-        ' WHERE w.workout_id = ?',
-        (id,)
-    ).fetchone()
+    db = get_db()
+    with db.cursor(cursor_factory=DictCursor) as cursor:
+        cursor.execute(
+            '''
+            SELECT w.workout_id, w.name, w.duration, w.difficulty_level, c.member_id
+            FROM Workout w
+            JOIN Completes c ON w.workout_id = c.workout_id
+            WHERE w.workout_id = %s;
+            ''',
+            (id,)
+        )
+        workout = cursor.fetchone()
 
     if workout is None:
         abort(404, f"Workout id {id} doesn't exist.")
@@ -69,6 +114,7 @@ def get_workout(id, check_author=True):
         abort(403)
 
     return workout
+
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
@@ -88,11 +134,15 @@ def update(id):
             flash(error)
         else:
             db = get_db()
-            db.execute(
-                'UPDATE Workout SET name = ?, duration = ?, difficulty_level = ?'
-                ' WHERE workout_id = ?',
-                (name, duration, difficulty_level, id)
-            )
+            with db.cursor() as cursor:
+                cursor.execute(
+                    '''
+                    UPDATE Workout
+                    SET name = %s, duration = %s, difficulty_level = %s
+                    WHERE workout_id = %s;
+                    ''',
+                    (name, duration, difficulty_level, id)
+                )
             db.commit()
             return redirect(url_for('workout.index'))
 
@@ -102,8 +152,12 @@ def update(id):
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
 def delete(id):
-    get_workout(id)
+    workout = get_workout(id)
     db = get_db()
-    db.execute('DELETE FROM Workout WHERE workout_id = ?', (id,))
+    with db.cursor() as cursor:
+        
+        cursor.execute('DELETE FROM Completes WHERE workout_id = %s AND member_id = %s;', (id, g.user['member_id']))
+        cursor.execute('DELETE FROM Workout WHERE workout_id = %s;', (id,))
     db.commit()
     return redirect(url_for('workout.index'))
+

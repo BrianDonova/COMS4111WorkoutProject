@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Nutrition Entry{% endblock %}
+
+{% block content %}
+<h1>Add Nutrition Entry</h1>
+<form method="post">
+    <label for="name">Food Name</label>
+    <input type="text" name="name" id="name" value="{{ request.form.get('name', '') }}" required>
+
+    <label for="calories">Calories (kcal)</label>
+    <input type="number" name="calories" id="calories" value="{{ request.form.get('calories', '') }}" required>
+
+    <label for="proteins">Proteins (g)</label>
+    <input type="number" name="proteins" id="proteins" value="{{ request.form.get('proteins', '') }}" required>
+
+    <label for="carbohydrates">Carbohydrates (g)</label>
+    <input type="number" name="carbohydrates" id="carbohydrates" value="{{ request.form.get('carbohydrates', '') }}" required>
+
+    <input type="submit" value="Add Entry">
+</form>
+{% endblock %}

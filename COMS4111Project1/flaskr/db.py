@@ -2,6 +2,7 @@ import psycopg2
 from flask import current_app, g
 import click
 from datetime import datetime
+from psycopg2.extras import DictCursor  # Import DictCursor
 
 
 def get_db():
@@ -12,10 +13,11 @@ def get_db():
             user="bcd2136",  
             password="bcd2136",  
             host="w4111.cisxo09blonu.us-east-1.rds.amazonaws.com",  
-            port="5432"
+            port="5432",
+            cursor_factory=DictCursor  # Specify DictCursor here
         )
         g.db.autocommit = True 
-
+    
     return g.db
 
 

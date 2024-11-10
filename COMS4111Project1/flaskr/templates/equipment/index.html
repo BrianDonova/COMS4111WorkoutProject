@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Equipment{% endblock %}
+
+{% block content %}
+<h1>Equipment</h1>
+{% if equipment %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in equipment %}
+            <tr>
+                <td>{{ item['equipment_id'] }}</td>
+                <td>{{ item['name'] }}</td>
+                <td>{{ item['type'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No equipment found.</p>
+{% endif %}
+{% endblock %}

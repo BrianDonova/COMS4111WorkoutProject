@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Progress Entries{% endblock %}
+
+{% block content %}
+<h1>Progress Entries</h1>
+
+{% if progresses %}
+    <ul>
+        {% for progress in progresses %}
+        <li>
+            <strong>{{ progress['member_name'] }}</strong> - {{ progress['created_at'] }}
+            <p>{{ progress['weekly_summary'] }}</p>
+            {% if progress['progress_photos_url'] %}
+                <img src="{{ progress['progress_photos_url'] }}" alt="Progress Photo">
+            {% endif %}
+            {% if g.user and g.user['member_id'] == progress['member_id'] %}
+                <a href="{{ url_for('progress.update', id=progress['progress_id']) }}">Edit</a>
+                <form action="{{ url_for('progress.delete', id=progress['progress_id']) }}" method="post" style="display:inline;">
+                    <button type="submit" onclick="return confirm('Are you sure?');">Delete</button>
+                </form>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No progress entries found.</p>
+{% endif %}
+
+{% if g.user %}
+    <p><a href="{{ url_for('progress.create') }}">Add New Progress Entry</a></p>
+{% endif %}
+{% endblock %}

@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
 
-{% block header %}
-  <h1>{% block title %}Workouts{% endblock %}</h1>
-{% endblock %}
+{% block title %}Workouts{% endblock %}
 
 {% block content %}
+  <h1>Workouts</h1>
   {% for workout in workouts %}
     <article class="workout">
       <header>
@@ -12,10 +11,11 @@
         <div class="details">
           Duration: {{ workout['duration'] }} minutes |
           Difficulty: {{ workout['difficulty_level'] }} |
-          Trainer: {{ workout['member_name'] }}
+          Member: {{ workout['member_name'] }}
         </div>
         {% if g.user and g.user['member_id'] == workout['member_id'] %}
           <a class="action" href="{{ url_for('workout.update', id=workout['workout_id']) }}">Edit</a>
+          <a href="{{ url_for('workout.view', id=workout['workout_id']) }}">{{ workout['name'] }}</a>
         {% endif %}
       </header>
     </article>

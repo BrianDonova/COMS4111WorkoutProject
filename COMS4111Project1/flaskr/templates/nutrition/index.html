@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Nutrition Entries{% endblock %}
+
+{% block content %}
+<h1>Nutrition Entries</h1>
+<ul>
+    {% for nutrition in nutritions %}
+    <li>
+        <strong>{{ nutrition['name'] }}</strong> - Calories: {{ nutrition['calories'] }} kcal, Proteins: {{ nutrition['proteins'] }}g, Carbs: {{ nutrition['carbohydrates'] }}g
+        <br>
+        Logged by: {{ nutrition['member_name'] }} on {{ nutrition['created_at'] }}
+    </li>
+    {% else %}
+    <li>No nutrition entries found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

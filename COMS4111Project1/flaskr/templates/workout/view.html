@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ workout['name'] }}{% endblock %}
+
+{% block content %}
+<h1>{{ workout['name'] }}</h1>
+<p>Duration: {{ workout['duration'] }} minutes</p>
+<p>Difficulty Level: {{ workout['difficulty_level'] }}</p>
+
+<h2>Exercises</h2>
+{% if exercises %}
+    <ul>
+        {% for exercise in exercises %}
+        <li>
+            <strong>{{ exercise['name'] }}</strong>
+            <p>{{ exercise['description'] }}</p>
+            <p>Reps: {{ exercise['reps'] }}, Sets: {{ exercise['sets'] }}, Duration: {{ exercise['duration'] }} mins</p>
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No exercises for this workout.</p>
+{% endif %}
+{% endblock %}

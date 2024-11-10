@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Trainers{% endblock %}
+
+{% block content %}
+<h1>Trainers</h1>
+{% if trainers %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Experience Level</th>
+                <th>Certifications</th>
+                <th>Specialization</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trainer in trainers %}
+            <tr>
+                <td>{{ trainer['trainer_id'] }}</td>
+                <td>{{ trainer['experience_level'] }}</td>
+                <td>{{ trainer['certifications'] }}</td>
+                <td>{{ trainer['specialization'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No trainers found.</p>
+{% endif %}
+{% endblock %}

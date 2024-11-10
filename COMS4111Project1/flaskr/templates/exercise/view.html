@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ workout['name'] }}{% endblock %}
+
+{% block content %}
+<h1>{{ workout['name'] }}</h1>
+<p>Duration: {{ workout['duration'] }} minutes</p>
+<p>Difficulty Level: {{ workout['difficulty_level'] }}</p>
+
+<h2>Exercises</h2>
+{% if exercises %}
+    <ul>
+        {% for exercise in exercises %}
+        <li>
+            <strong>{{ exercise['name'] }}</strong>
+            
+            <p>Reps: {{ exercise['reps'] }}, Sets: {{ exercise['sets'] }}, Duration: {{ exercise['duration'] }} mins</p>
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No exercises for this workout.</p>
+{% endif %}
+{% endblock %}
+
+
+<h2>Locations</h2>
+{% if locations %}
+    <ul>
+        {% for location in locations %}
+        <li>
+            <strong>Location ID:</strong> {{ location['location_id'] }} - {{ location['amenities'] }} (Capacity: {{ location['capacity'] }})
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No locations associated with this exercise.</p>
+{% endif %}
+
+<h2>Required Equipment</h2>
+{% if equipment %}
+    <ul>
+        {% for item in equipment %}
+        <li>
+            <strong>{{ item['name'] }}</strong> - Type: {{ item['type'] }}
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No equipment required for this exercise.</p>
+{% endif %}
+{% endblock %}
+

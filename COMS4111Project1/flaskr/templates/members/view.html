@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ member['name'] }}{% endblock %}
+
+{% block content %}
+<h1>{{ member['name'] }}</h1>
+<p>Email: {{ member['email_address'] }}</p>
+<p>Age: {{ member['age'] }}</p>
+<p>Gender: {{ member['gender'] }}</p>
+<p>Height: {{ member['height'] }} cm</p>
+<p>Weight: {{ member['weight'] }} kg</p>
+
+<h2>Trainer</h2>
+{% if trainer %}
+    <p>Name: Trainer ID {{ trainer['trainer_id'] }}</p>
+    <p>Experience Level: {{ trainer['experience_level'] }}</p>
+    <p>Certifications: {{ trainer['certifications'] }}</p>
+    <p>Specialization: {{ trainer['specialization'] }}</p>
+{% else %}
+    <p>No trainer assigned.</p>
+{% endif %}
+{% endblock %}

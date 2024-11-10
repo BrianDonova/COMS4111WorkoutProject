@@ -1,24 +1,25 @@
-<!doctype html>
-<title>{% block title %}{% endblock %} - Flaskr</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<nav>
-  <h1>Flaskr</h1>
-  <ul>
-    {% if g.user %}
-      <li><span>{{ g.user['username'] }}</span>
-      <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
-    {% else %}
-      <li><a href="{{ url_for('auth.register') }}">Register</a>
-      <li><a href="{{ url_for('auth.login') }}">Log In</a>
-    {% endif %}
-  </ul>
-</nav>
-<section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
-  {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
-</section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Fitness App{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('members.index') }}">Members</a></li>
+            <li><a href="{{ url_for('workout.index') }}">Workouts</a></li>
+            <li><a href="{{ url_for('progress.index') }}">Progress</a></li>
+            <li><a href="{{ url_for('nutrition.index') }}">Nutrition</a></li>
+            <li><a href="{{ url_for('trainer.index') }}">Trainers</a></li>
+            <li><a href="{{ url_for('exercise.index') }}">Exercises</a></li>
+            <li><a href="{{ url_for('location.index') }}">Locations</a></li>
+            <li><a href="{{ url_for('equipment.index') }}">Equipment</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
