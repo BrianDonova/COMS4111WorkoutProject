@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trainer Member Count</title>
+</head>
+<body>
+    <h1>Search Members Assigned to Trainer</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form method="post">
+        <label for="trainer_id">Trainer ID:</label>
+        <input type="text" name="trainer_id" id="trainer_id" required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if trainer_id is not none %}
+        <h2>Results for Trainer ID: {{ trainer_id }}</h2>
+        <p>Experience Level: {{ experience_level }}</p>
+        <p>Number of Members Assigned: {{ member_count }}</p>
+    {% endif %}
+</body>
+</html>
