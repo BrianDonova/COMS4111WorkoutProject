@@ -4,7 +4,6 @@ from psycopg2.extras import DictCursor
 
 bp = Blueprint('trainer', __name__, url_prefix='/trainer')
 
-# Route to display all trainers
 @bp.route('/')
 def index():
     db = get_db()
