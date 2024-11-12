@@ -1,0 +1,30 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Trainers</title>
+</head>
+<body>
+    <h1>Search Trainers by Specialization and Experience Level</h1>
+    <form method="post">
+        <label for="specialization">Specialization:</label>
+        <select name="specialization" id="specialization">
+            {% for specialization in specializations %}
+                <option value="{{ specialization }}">{{ specialization }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="experience_level">Experience Level:</label>
+        <select name="experience_level" id="experience_level">
+            {% for level in experience_levels %}
+                <option value="{{ level }}">{{ level }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Search</button>
+    </form>
+
+    {% if count is not none %}
+        <h2>Total Trainers: {{ count }}</h2>
+    {% endif %}
+</body>
+</html>
