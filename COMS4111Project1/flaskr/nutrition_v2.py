@@ -33,7 +33,7 @@ def add_nutrition():
             member = cursor.fetchone()
             
             if member is None:
-                flash('Error: Member does not exist. Please enter a valid member name.', 'error')
+                flash('Error: Member name does not exist in the directory. Please enter a valid member name.', 'error')
                 return redirect(url_for('nutrition.add_nutrition'))
 
             member_id = member['member_id']
@@ -48,7 +48,7 @@ def add_nutrition():
             
             db.commit()
 
-        flash('Nutrition information added successfully!', 'success')
+        flash('Successfully added to nutrition log.', 'success')
         return redirect(url_for('nutrition.index'))
 
     return render_template('nutrition/add.html')
