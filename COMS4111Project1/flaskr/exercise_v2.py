@@ -29,7 +29,7 @@ def view(exercise_id):
             FROM Exercises e
             JOIN Contains con ON e.exercise_id = con.exercise_id
             JOIN Workout w ON con.workout_id = w.workout_id
-            WHERE e.exercise_id = %d;
+            WHERE e.exercise_id = %s;
         """, (exercise_id,))
         exercise = cursor.fetchone()
 
@@ -41,7 +41,7 @@ def view(exercise_id):
             SELECT l.location_id, l.amenities, l.capacity
             FROM Location l
             JOIN Occur o ON l.location_id = o.location_id
-            WHERE o.exercise_id = %d;
+            WHERE o.exercise_id = %s;
         """, (exercise_id,))
         locations = cursor.fetchall()
 
@@ -50,7 +50,7 @@ def view(exercise_id):
             SELECT eq.equipment_id, eq.name, eq.type
             FROM Equipment eq
             JOIN Requires r ON eq.equipment_id = r.equipment_id
-            WHERE r.exercise_id = %d;
+            WHERE r.exercise_id = %s;
         """, (exercise_id,))
         equipment = cursor.fetchall()
         
