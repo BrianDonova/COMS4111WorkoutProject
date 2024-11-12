@@ -1,28 +1,44 @@
-<!doctype html>
+<!-- templates/nutrition/add.html -->
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Add Nutrition Information</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Nutrition</title>
 </head>
 <body>
     <h1>Add Nutrition Information</h1>
-    <form action="{{ url_for('nutrition.add_nutrition') }}" method="post">
-        <label for="member_name">Member Name:</label>
-        <input type="text" name="member_name" required>
 
-        <label for="nutrition_name">Nutrition Name:</label>
-        <input type="text" name="nutrition_name" required>
+    <!-- Display flashed messages (like errors or success) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form method="post" action="{{ url_for('nutrition.add_nutrition') }}">
+        <label for="name">Nutrition Name:</label>
+        <input type="text" id="name" name="name" required>
 
         <label for="calories">Calories:</label>
-        <input type="number" name="calories" required>
+        <input type="number" id="calories" name="calories" required>
 
-        <label for="proteins">Proteins:</label>
-        <input type="number" step="0.1" name="proteins" required>
+        <label for="proteins">Proteins (g):</label>
+        <input type="number" id="proteins" name="proteins" required>
 
-        <label for="carbohydrates">Carbohydrates:</label>
-        <input type="number" step="0.1" name="carbohydrates" required>
+        <label for="carbohydrates">Carbohydrates (g):</label>
+        <input type="number" id="carbohydrates" name="carbohydrates" required>
+
+        <label for="member_name">Member Name:</label>
+        <input type="text" id="member_name" name="member_name" required>
 
         <button type="submit">Add Nutrition</button>
     </form>
+
+    <p><a href="{{ url_for('nutrition.index') }}">Back to Nutrition List</a></p>
 </body>
 </html>
