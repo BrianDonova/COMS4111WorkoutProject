@@ -4,21 +4,28 @@
 
 {% block content %}
 <h1>Locations</h1>
+
+<!-- Search Form -->
+<form method="get" action="{{ url_for('location.index') }}" style="margin-bottom: 1em;">
+    <input type="text" name="q" placeholder="Search by amenities" value="{{ request.args.get('q', '') }}" style="padding: 0.5em; width: 100%; max-width: 300px; border: 1px solid #ccc; border-radius: 4px;">
+    <button type="submit" style="padding: 0.5em 1em; background-color: #2980b9; color: #fff; border: none; border-radius: 4px;">Search</button>
+</form>
+
 {% if locations %}
-    <table>
+    <table style="width: 100%; border-collapse: collapse;">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Amenities</th>
-                <th>Capacity</th>
+                <th style="padding: 0.75em; border-bottom: 2px solid #ddd;">ID</th>
+                <th style="padding: 0.75em; border-bottom: 2px solid #ddd;">Amenities</th>
+                <th style="padding: 0.75em; border-bottom: 2px solid #ddd;">Capacity</th>
             </tr>
         </thead>
         <tbody>
             {% for location in locations %}
             <tr>
-                <td>{{ location['location_id'] }}</td>
-                <td>{{ location['amenities'] }}</td>
-                <td>{{ location['capacity'] }}</td>
+                <td style="padding: 0.75em; border-bottom: 1px solid #eee;">{{ location['location_id'] }}</td>
+                <td style="padding: 0.75em; border-bottom: 1px solid #eee;">{{ location['amenities'] }}</td>
+                <td style="padding: 0.75em; border-bottom: 1px solid #eee;">{{ location['capacity'] }}</td>
             </tr>
             {% endfor %}
         </tbody>

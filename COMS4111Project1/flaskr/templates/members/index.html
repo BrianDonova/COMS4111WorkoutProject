@@ -4,13 +4,24 @@
 
 {% block content %}
 <h1>Members</h1>
-<ul>
-    {% for member in members %}
-    <li>
-        <a href="{{ url_for('members.detail', member_id=member[0]) }}">{{ member[1] }}</a>
-    </li>
+
+<!-- Search bar form -->
+<form method="get" action="{{ url_for('members.index') }}" style="margin-bottom: 1em;">
+    <input type="text" name="q" placeholder="Search by name" value="{{ search_query }}" style="width: 90%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px;">
+    <button type="submit" style="padding: 0.5em 1em; background-color: #2980b9; color: white; border: none; border-radius: 4px;">Search</button>
+</form>
+
+<ul style="list-style-type: none; padding: 0;">
+    {% if members %}
+        {% for member in members %}
+        <li style="padding: 0.5em 0; border-bottom: 1px solid #eee;">
+            <a href="{{ url_for('members.detail', member_id=member['member_id']) }}" style="color: #2980b9; text-decoration: none;">
+                {{ member['name'] }}
+            </a>
+        </li>
+        {% endfor %}
     {% else %}
-    <li>No members found.</li>
-    {% endfor %}
+        <li>No members found.</li>
+    {% endif %}
 </ul>
 {% endblock %}

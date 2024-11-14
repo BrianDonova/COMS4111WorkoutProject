@@ -4,15 +4,24 @@
 
 {% block content %}
 <h1>Nutrition Entries</h1>
-<ul>
-    {% for nutrition in nutritions %}
-    <li>
-        <strong>{{ nutrition['name'] }}</strong> - Calories: {{ nutrition['calories'] }} kcal, Proteins: {{ nutrition['proteins'] }}g, Carbs: {{ nutrition['carbohydrates'] }}g
-        <br>
-        Logged by: {{ nutrition['member_name'] }} on {{ nutrition['created_at'] }}
-    </li>
-    {% else %}
-    <li>No nutrition entries found.</li>
-    {% endfor %}
-</ul>
+
+<!-- Search Form -->
+<form method="get" action="{{ url_for('nutrition.index') }}" style="margin-bottom: 1em;">
+    <input type="text" name="q" placeholder="Search by food or member name" value="{{ request.args.get('q', '') }}" style="padding: 0.5em; width: 100%; max-width: 300px; border: 1px solid #ccc; border-radius: 4px;">
+    <button type="submit" style="padding: 0.5em 1em; background-color: #2980b9; color: #fff; border: none; border-radius: 4px;">Search</button>
+</form>
+
+{% if nutritions %}
+    <ul style="list-style-type: none; padding: 0;">
+        {% for nutrition in nutritions %}
+        <li style="border-bottom: 1px solid #ccc; padding: 1em 0;">
+            <strong>{{ nutrition['name'] }}</strong> - Calories: {{ nutrition['calories'] }} kcal, Proteins: {{ nutrition['proteins'] }}g, Carbs: {{ nutrition['carbohydrates'] }}g
+            <br>
+            <span style="color: #7f8c8d;">Logged by: {{ nutrition['member_name'] }} on {{ nutrition['created_at'] }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No nutrition entries found.</p>
+{% endif %}
 {% endblock %}

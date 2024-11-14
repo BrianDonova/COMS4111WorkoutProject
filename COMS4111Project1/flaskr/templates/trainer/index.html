@@ -4,23 +4,30 @@
 
 {% block content %}
 <h1>Trainers</h1>
+
+<!-- Search Form -->
+<form method="get" action="{{ url_for('trainer.index') }}" style="margin-bottom: 1em;">
+    <input type="text" name="q" placeholder="Search by experience, certification, or specialization" value="{{ request.args.get('q', '') }}" style="padding: 0.5em; width: 100%; max-width: 300px; border: 1px solid #ccc; border-radius: 4px;">
+    <button type="submit" style="padding: 0.5em 1em; background-color: #2980b9; color: #fff; border: none; border-radius: 4px;">Search</button>
+</form>
+
 {% if trainers %}
-    <table>
+    <table style="width: 100%; border-collapse: collapse;">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Experience Level</th>
-                <th>Certifications</th>
-                <th>Specialization</th>
+                <th style="padding: 0.75em; border-bottom: 2px solid #ddd;">ID</th>
+                <th style="padding: 0.75em; border-bottom: 2px solid #ddd;">Experience Level</th>
+                <th style="padding: 0.75em; border-bottom: 2px solid #ddd;">Certifications</th>
+                <th style="padding: 0.75em; border-bottom: 2px solid #ddd;">Specialization</th>
             </tr>
         </thead>
         <tbody>
             {% for trainer in trainers %}
             <tr>
-                <td>{{ trainer['trainer_id'] }}</td>
-                <td>{{ trainer['experience_level'] }}</td>
-                <td>{{ trainer['certifications'] }}</td>
-                <td>{{ trainer['specialization'] }}</td>
+                <td style="padding: 0.75em; border-bottom: 1px solid #eee;">{{ trainer['trainer_id'] }}</td>
+                <td style="padding: 0.75em; border-bottom: 1px solid #eee;">{{ trainer['experience_level'] }}</td>
+                <td style="padding: 0.75em; border-bottom: 1px solid #eee;">{{ trainer['certifications'] }}</td>
+                <td style="padding: 0.75em; border-bottom: 1px solid #eee;">{{ trainer['specialization'] }}</td>
             </tr>
             {% endfor %}
         </tbody>

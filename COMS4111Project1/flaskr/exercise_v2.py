@@ -36,7 +36,6 @@ def view(exercise_id):
         if exercise is None:
             return "Exercise not found.", 404
 
-        # Get associated locations for the exercise
         cursor.execute("""
             SELECT l.location_id, l.amenities, l.capacity
             FROM Location l
@@ -44,8 +43,7 @@ def view(exercise_id):
             WHERE o.exercise_id = %s;
         """, (exercise_id,))
         locations = cursor.fetchall()
-
-        # Get associated equipment for the exercise
+        
         cursor.execute("""
             SELECT eq.equipment_id, eq.name, eq.type
             FROM Equipment eq

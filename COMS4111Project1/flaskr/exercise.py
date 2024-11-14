@@ -7,14 +7,25 @@ bp = Blueprint('exercise', __name__, url_prefix='/exercise')
 
 @bp.route('/')
 def index():
+    search_query = request.args.get('q', '').strip()
     db = get_db()
     with db.cursor(cursor_factory=DictCursor) as cursor:
-        cursor.execute("""
-            SELECT e.exercise_id, e.name, e.reps, e.sets, w.name AS workout_name
-            FROM Exercises e
-            JOIN Workout w ON e.workout_id = w.workout_id
-            ORDER BY e.exercise_id;
-        """)
+        if search_query:
+            # Use ILIKE for case-insensitive search
+            cursor.execute("""
+                SELECT e.exercise_id, e.name, e.reps, e.sets, w.name AS workout_name
+                FROM Exercises e
+                JOIN Workout w ON e.workout_id = w.workout_id
+                WHERE e.name ILIKE %s
+                ORDER BY e.exercise_id;
+            """, (f'%{search_query}%',))
+        else:
+            cursor.execute("""
+                SELECT e.exercise_id, e.name, e.reps, e.sets, w.name AS workout_name
+                FROM Exercises e
+                JOIN Workout w ON e.workout_id = w.workout_id
+                ORDER BY e.exercise_id;
+            """)
         exercises = cursor.fetchall()
     return render_template('exercise/index.html', exercises=exercises)
 
@@ -22,11 +33,12 @@ def index():
 def view(exercise_id):
     db = get_db()
     with db.cursor(cursor_factory=DictCursor) as cursor:
-        # Get exercise details
+        # Get exercise details and associated workout
         cursor.execute("""
             SELECT e.exercise_id, e.name, e.reps, e.sets, w.name AS workout_name
             FROM Exercises e
-            JOIN Workout w ON e.workout_id = w.workout_id
+            JOIN Contains con ON e.exercise_id = con.exercise_id
+            JOIN Workout w ON con.workout_id = w.workout_id
             WHERE e.exercise_id = %s;
         """, (exercise_id,))
         exercise = cursor.fetchone()
@@ -41,7 +53,7 @@ def view(exercise_id):
             WHERE o.exercise_id = %s;
         """, (exercise_id,))
         locations = cursor.fetchall()
-
+        
         cursor.execute("""
             SELECT eq.equipment_id, eq.name, eq.type
             FROM Equipment eq

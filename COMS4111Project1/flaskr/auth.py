@@ -13,7 +13,7 @@ def register():
         name = request.form['name']
         email_address = request.form['email']
         password = request.form['password']
-        age = request.form.get('age')  # Add other fields if needed
+        age = request.form.get('age') 
         db = get_db()
         error = None
 
@@ -58,12 +58,12 @@ def login():
 
         if user is None:
             error = 'Incorrect email address.'
-        elif not check_password_hash(user[6], password):  # Assuming password is the 7th column
+        elif not check_password_hash(user[6], password):  
             error = 'Incorrect password.'
 
         if error is None:
             session.clear()
-            session['user_id'] = user[0]  # Assuming member_id is the first column
+            session['user_id'] = user[0]  
             return redirect(url_for('index'))
 
         flash(error)

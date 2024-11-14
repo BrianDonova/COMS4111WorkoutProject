@@ -4,21 +4,28 @@
 
 {% block content %}
 <h1>Equipment</h1>
+
+<!-- Search bar form -->
+<form method="get" action="{{ url_for('equipment.index') }}" style="margin-bottom: 1em;">
+    <input type="text" name="q" placeholder="Search equipment..." value="{{ request.args.get('q', '') }}" style="width: 90%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px;">
+    <button type="submit" style="padding: 0.5em 1em; background-color: #2980b9; color: white; border: none; border-radius: 4px;">Search</button>
+</form>
+
 {% if equipment %}
-    <table>
+    <table style="width: 100%; border-collapse: collapse;">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Type</th>
+                <th style="padding: 0.75em; border-bottom: 2px solid #ddd;">ID</th>
+                <th style="padding: 0.75em; border-bottom: 2px solid #ddd;">Name</th>
+                <th style="padding: 0.75em; border-bottom: 2px solid #ddd;">Type</th>
             </tr>
         </thead>
         <tbody>
             {% for item in equipment %}
             <tr>
-                <td>{{ item['equipment_id'] }}</td>
-                <td>{{ item['name'] }}</td>
-                <td>{{ item['type'] }}</td>
+                <td style="padding: 0.75em; border-bottom: 1px solid #eee;">{{ item['equipment_id'] }}</td>
+                <td style="padding: 0.75em; border-bottom: 1px solid #eee;">{{ item['name'] }}</td>
+                <td style="padding: 0.75em; border-bottom: 1px solid #eee;">{{ item['type'] }}</td>
             </tr>
             {% endfor %}
         </tbody>
