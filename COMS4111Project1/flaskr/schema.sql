@@ -1,12 +1,11 @@
 CREATE TABLE Member(
-	member_id int, 
+	member_id SERIAL PRIMARY KEY, 
 	name text,
 	email_address text, 
 	age int, 
 	gender text, 
 	height int, 
-	weight int,
-	PRIMARY KEY (member_id)
+	weight int
 );
 CREATE TABLE Trainer(
     trainer_id SERIAL PRIMARY KEY, 

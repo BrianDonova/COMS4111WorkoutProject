@@ -87,3 +87,57 @@ def member_count():
                 member_count = 0
 
     return render_template('trainer/member_count.html', trainer_id=trainer_id, experience_level=experience_level, member_count=member_count)
+
+
+@bp.route('/add', methods=('GET', 'POST'))
+def add_trainer():
+    if request.method == 'POST':
+        experience_level = request.form['experience_level']
+        certifications = request.form['certifications']
+        specialization = request.form['specialization']
+
+        # Error validation
+        error = None
+        if not experience_level:
+            error = 'Experience level is required.'
+        elif not certifications:
+            error = 'Certifications are required.'
+        elif not specialization:
+            error = 'Specialization is required.'
+
+        if error:
+            flash(error, 'error')
+        else:
+            db = get_db()
+            try:
+                with db.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        INSERT INTO Trainer (experience_level, certifications, specialization)
+                        VALUES (%s, %s, %s);
+                        """,
+                        (experience_level, certifications, specialization)
+                    )
+                db.commit()
+                flash('Trainer added successfully!', 'success')
+                return redirect(url_for('trainer.index'))
+            except Exception as e:
+                db.rollback()
+                flash(f'An error occurred: {str(e)}', 'error')
+
+    return render_template('trainer/add.html')
+
+
+
+@bp.route('/<int:trainer_id>/delete', methods=('POST',))
+def delete_trainer(trainer_id):
+    db = get_db()
+    try:
+        with db.cursor() as cursor:
+            cursor.execute("DELETE FROM Trainer WHERE trainer_id = %s;", (trainer_id,))
+            db.commit()
+            flash('Trainer deleted successfully!', 'success')
+    except Exception as e:
+        db.rollback()
+        flash(f'An error occurred: {str(e)}', 'error')
+    return redirect(url_for('trainer.index'))

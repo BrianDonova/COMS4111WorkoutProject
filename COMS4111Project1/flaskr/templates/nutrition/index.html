@@ -5,6 +5,9 @@
 {% block content %}
 <h1>Nutrition Entries</h1>
 
+<!-- Link to add a new nutrition entry -->
+<a href="{{ url_for('nutrition.add_nutrition') }}" style="color: #2980b9; text-decoration: none; margin-bottom: 1em; display: inline-block;">Add New Nutrition Entry</a>
+
 <!-- Search Form -->
 <form method="get" action="{{ url_for('nutrition.index') }}" style="margin-bottom: 1em;">
     <input type="text" name="q" placeholder="Search by food or member name" value="{{ request.args.get('q', '') }}" style="padding: 0.5em; width: 100%; max-width: 300px; border: 1px solid #ccc; border-radius: 4px;">
@@ -18,6 +21,9 @@
             <strong>{{ nutrition['name'] }}</strong> - Calories: {{ nutrition['calories'] }} kcal, Proteins: {{ nutrition['proteins'] }}g, Carbs: {{ nutrition['carbohydrates'] }}g
             <br>
             <span style="color: #7f8c8d;">Logged by: {{ nutrition['member_name'] }} on {{ nutrition['created_at'] }}</span>
+            <form action="{{ url_for('nutrition.delete_nutrition', nutrition_id=nutrition['nutrition_id']) }}" method="post" style="display:inline;">
+                <button type="submit" style="color: #e74c3c; border: none; background: none; cursor: pointer; text-decoration: underline; font-size: 0.9em;" onclick="return confirm('Are you sure you want to delete this nutrition entry?');">Delete</button>
+            </form>
         </li>
         {% endfor %}
     </ul>

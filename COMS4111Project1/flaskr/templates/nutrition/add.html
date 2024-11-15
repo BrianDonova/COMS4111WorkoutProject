@@ -1,44 +1,41 @@
-<!-- templates/nutrition/add.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Nutrition</title>
-</head>
-<body>
-    <h1>Add Nutrition Information</h1>
+{% extends 'base.html' %}
 
-    <!-- Display flashed messages (like errors or success) -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <ul>
-                {% for category, message in messages %}
-                    <li class="{{ category }}">{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
+{% block title %}Add Nutrition Entry{% endblock %}
 
-    <form method="post" action="{{ url_for('nutrition.add_nutrition') }}">
-        <label for="name">Nutrition Name:</label>
-        <input type="text" id="name" name="name" required>
+{% block content %}
+<h1>Add Nutrition Information</h1>
 
-        <label for="calories">Calories:</label>
-        <input type="number" id="calories" name="calories" required>
+<!-- Display flashed messages (like errors or success) -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}" style="color: {% if category == 'error' %}#e74c3c{% else %}#2ecc71{% endif %};">
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
 
-        <label for="proteins">Proteins (g):</label>
-        <input type="number" id="proteins" name="proteins" required>
+<form method="post" action="{{ url_for('nutrition.add_nutrition') }}">
+    <label for="name">Nutrition Name:</label>
+    <input type="text" id="name" name="name" value="{{ request.form.get('name', '') }}" required>
 
-        <label for="carbohydrates">Carbohydrates (g):</label>
-        <input type="number" id="carbohydrates" name="carbohydrates" required>
+    <label for="calories">Calories:</label>
+    <input type="number" id="calories" name="calories" value="{{ request.form.get('calories', '') }}" required>
 
-        <label for="member_name">Member Name:</label>
-        <input type="text" id="member_name" name="member_name" required>
+    <label for="proteins">Proteins (g):</label>
+    <input type="number" id="proteins" name="proteins" value="{{ request.form.get('proteins', '') }}" required>
 
-        <button type="submit">Add Nutrition</button>
-    </form>
+    <label for="carbohydrates">Carbohydrates (g):</label>
+    <input type="number" id="carbohydrates" name="carbohydrates" value="{{ request.form.get('carbohydrates', '') }}" required>
 
-    <p><a href="{{ url_for('nutrition.index') }}">Back to Nutrition List</a></p>
-</body>
-</html>
+    <label for="member_name">Member Name:</label>
+    <input type="text" id="member_name" name="member_name" value="{{ request.form.get('member_name', '') }}" required>
+
+    <button type="submit">Add Nutrition</button>
+</form>
+
+<p><a href="{{ url_for('nutrition.index') }}">Back to Nutrition List</a></p>
+{% endblock %}

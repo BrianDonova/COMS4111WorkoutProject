@@ -1,22 +1,32 @@
 {% extends 'base.html' %}
 
-{% block title %}Add Nutrition Entry{% endblock %}
+{% block title %}Add Progress Entry{% endblock %}
 
 {% block content %}
-<h1>Add Nutrition Entry</h1>
+<h1>Add Progress Entry</h1>
 <form method="post">
-    <label for="name">Food Name</label>
-    <input type="text" name="name" id="name" value="{{ request.form.get('name', '') }}" required>
+    <label for="member_id">Member</label>
+    <select name="member_id" id="member_id" required>
+        <option value="">Select a member</option>
+        {% for member in members %}
+            <option value="{{ member['member_id'] }}">{{ member['name'] }}</option>
+        {% endfor %}
+    </select><br><br>
 
-    <label for="calories">Calories (kcal)</label>
-    <input type="number" name="calories" id="calories" value="{{ request.form.get('calories', '') }}" required>
+    <label for="workout_id">Workout (optional)</label>
+    <select name="workout_id" id="workout_id">
+        <option value="">Select a workout</option>
+        {% for workout in workouts %}
+            <option value="{{ workout['workout_id'] }}">{{ workout['name'] }}</option>
+        {% endfor %}
+    </select><br><br>
 
-    <label for="proteins">Proteins (g)</label>
-    <input type="number" name="proteins" id="proteins" value="{{ request.form.get('proteins', '') }}" required>
+    <label for="weekly_summary">Weekly Summary</label>
+    <textarea name="weekly_summary" id="weekly_summary" required>{{ request.form.get('weekly_summary', '') }}</textarea><br><br>
 
-    <label for="carbohydrates">Carbohydrates (g)</label>
-    <input type="number" name="carbohydrates" id="carbohydrates" value="{{ request.form.get('carbohydrates', '') }}" required>
+    <label for="progress_photos_url">Progress Photo URL (optional)</label>
+    <input type="url" name="progress_photos_url" id="progress_photos_url" value="{{ request.form.get('progress_photos_url', '') }}"><br><br>
 
-    <input type="submit" value="Add Entry">
+    <button type="submit">Add Progress Entry</button>
 </form>
 {% endblock %}

@@ -5,6 +5,8 @@
 {% block content %}
 <h1>Workouts</h1>
 
+<a href="{{ url_for('workout.create') }}" style="color: #2980b9; text-decoration: none; margin-bottom: 1em; display: inline-block;">Create New Workout</a>
+
 <!-- Search Form -->
 <form method="get" action="{{ url_for('workout.index') }}" style="margin-bottom: 1em;">
     <input type="text" name="q" placeholder="Search workouts by name" value="{{ request.args.get('q', '') }}" style="padding: 0.5em; width: 100%; max-width: 300px; border: 1px solid #ccc; border-radius: 4px;">
@@ -15,19 +17,23 @@
     <table style="width: 100%; border-collapse: collapse;">
         <thead>
             <tr>
-                <th style="border-bottom: 1px solid #ccc; padding: 0.5em;">ID</th>
                 <th style="border-bottom: 1px solid #ccc; padding: 0.5em;">Name</th>
                 <th style="border-bottom: 1px solid #ccc; padding: 0.5em;">Duration (mins)</th>
                 <th style="border-bottom: 1px solid #ccc; padding: 0.5em;">Difficulty Level</th>
+                <th style="border-bottom: 1px solid #ccc; padding: 0.5em;">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for workout in workouts %}
             <tr>
-                <td style="border-bottom: 1px solid #eee; padding: 0.5em;">{{ workout['workout_id'] }}</td>
                 <td style="border-bottom: 1px solid #eee; padding: 0.5em;">{{ workout['name'] }}</td>
                 <td style="border-bottom: 1px solid #eee; padding: 0.5em;">{{ workout['duration'] }}</td>
                 <td style="border-bottom: 1px solid #eee; padding: 0.5em;">{{ workout['difficulty_level'] }}</td>
+                <td style="border-bottom: 1px solid #eee; padding: 0.5em;">
+                    <form action="{{ url_for('workout.delete', id=workout['workout_id']) }}" method="post" style="display:inline;">
+                        <button type="submit" onclick="return confirm('Are you sure you want to delete this workout?');" style="background-color: #e74c3c; color: white; border: none; padding: 0.5em; border-radius: 4px;">Delete</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

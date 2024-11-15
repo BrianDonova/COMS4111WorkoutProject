@@ -1,16 +1,10 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, redirect, render_template, request, url_for
 )
-from werkzeug.exceptions import abort
-
-from flaskr.auth import login_required
 from flaskr.db import get_db
 from psycopg2.extras import DictCursor
 
-
 bp = Blueprint('workout', __name__)
-
-
 
 @bp.route('/')
 def index():
@@ -37,6 +31,7 @@ def index():
 def view(id):
     db = get_db()
     with db.cursor(cursor_factory=DictCursor) as cursor:
+        # Fetch workout details
         cursor.execute("""
             SELECT w.workout_id, w.name, w.duration, w.difficulty_level
             FROM Workout w
@@ -44,6 +39,7 @@ def view(id):
         """, (id,))
         workout = cursor.fetchone()
 
+        # Fetch exercises associated with the workout
         cursor.execute("""
             SELECT e.exercise_id, e.name, e.reps, e.sets, e.duration
             FROM Exercises e
@@ -51,12 +47,20 @@ def view(id):
         """, (id,))
         exercises = cursor.fetchall()
 
-    return render_template('workout/view.html', workout=workout, exercises=exercises)
+        # Fetch members who completed the workout
+        cursor.execute("""
+            SELECT m.name AS member_name, m.email_address
+            FROM Completes c
+            JOIN Member m ON c.member_id = m.member_id
+            WHERE c.workout_id = %s;
+        """, (id,))
+        members_completed = cursor.fetchall()
+
+    return render_template('workout/view.html', workout=workout, exercises=exercises, members_completed=members_completed)
 
 
 @bp.route('/create', methods=('GET', 'POST'))
-@login_required
-def create():
+def create():  # Removed `@login_required` decorator
     if request.method == 'POST':
         name = request.form['name']
         duration = request.form['duration']
@@ -80,20 +84,12 @@ def create():
                     ''',
                     (name, duration, difficulty_level)
                 )
-                workout_id = cursor.fetchone()['workout_id']
-
-                # Associate the workout with the member in the Completes table
-                cursor.execute(
-                    '''
-                    INSERT INTO Completes (member_id, workout_id)
-                    VALUES (%s, %s);
-                    ''',
-                    (g.user['member_id'], workout_id)
-                )
-            db.commit()
+                db.commit()
+                flash('Workout created successfully!', 'success')
             return redirect(url_for('workout.index'))
 
     return render_template('workout/create.html')
+
 
 
 
@@ -121,7 +117,6 @@ def get_workout(id, check_author=True):
 
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
-@login_required
 def update(id):
     workout = get_workout(id)
 
@@ -154,14 +149,19 @@ def update(id):
 
 
 @bp.route('/<int:id>/delete', methods=('POST',))
-@login_required
 def delete(id):
-    workout = get_workout(id)
     db = get_db()
-    with db.cursor() as cursor:
-        
-        cursor.execute('DELETE FROM Completes WHERE workout_id = %s AND member_id = %s;', (id, g.user['member_id']))
-        cursor.execute('DELETE FROM Workout WHERE workout_id = %s;', (id,))
-    db.commit()
+    try:
+        with db.cursor() as cursor:
+            # Delete associated entries from Completes table
+            cursor.execute('DELETE FROM Completes WHERE workout_id = %s;', (id,))
+            # Delete the workout
+            cursor.execute('DELETE FROM Workout WHERE workout_id = %s;', (id,))
+        db.commit()
+        flash('Workout deleted successfully!', 'success')
+    except Exception as e:
+        db.rollback()
+        flash(f'An error occurred: {str(e)}', 'error')
     return redirect(url_for('workout.index'))
+
 

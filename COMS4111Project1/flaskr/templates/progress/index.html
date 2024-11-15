@@ -5,9 +5,12 @@
 {% block content %}
 <h1>Progress Entries</h1>
 
+<!-- Link to create a new progress entry -->
+<a href="{{ url_for('progress.create') }}" style="color: #2980b9; text-decoration: none; margin-bottom: 1em; display: inline-block;">Add New Progress Entry</a>
+
 <!-- Search Form -->
 <form method="get" action="{{ url_for('progress.index') }}" style="margin-bottom: 1em;">
-    <input type="text" name="q" placeholder="Search by member or workout name" value="{{ request.args.get('q', '') }}" style="padding: 0.5em; width: 100%; max-width: 300px; border: 1px solid #ccc; border-radius: 4px;">
+    <input type="text" name="q" placeholder="Search by member or workout name" value="{{ search_query }}" style="padding: 0.5em; width: 100%; max-width: 300px; border: 1px solid #ccc; border-radius: 4px;">
     <button type="submit" style="padding: 0.5em 1em; background-color: #2980b9; color: #fff; border: none; border-radius: 4px;">Search</button>
 </form>
 
@@ -24,22 +27,15 @@
                 <img src="{{ progress['progress_photos_url'] }}" alt="Progress Photo" style="max-width: 100%; height: auto; border-radius: 8px;">
             {% endif %}
             
-            {% if g.user and g.user['member_id'] == progress['member_id'] %}
-                <div style="margin-top: 0.5em;">
-                    <a href="{{ url_for('progress.update', id=progress['progress_id']) }}" style="color: #2980b9; text-decoration: none;">Edit</a>
-                    <form action="{{ url_for('progress.delete', id=progress['progress_id']) }}" method="post" style="display:inline;">
-                        <button type="submit" style="color: #e74c3c; border: none; background: none; cursor: pointer; text-decoration: underline; font-size: 0.9em;" onclick="return confirm('Are you sure?');">Delete</button>
-                    </form>
-                </div>
-            {% endif %}
+            <div style="margin-top: 0.5em;">
+                <form action="{{ url_for('progress.delete', id=progress['progress_id']) }}" method="post" style="display:inline;">
+                    <button type="submit" style="color: #e74c3c; border: none; background: none; cursor: pointer; text-decoration: underline; font-size: 0.9em;" onclick="return confirm('Are you sure you want to delete this progress entry?');">Delete</button>
+                </form>
+            </div>
         </li>
         {% endfor %}
     </ul>
 {% else %}
     <p>No progress entries found.</p>
-{% endif %}
-
-{% if g.user %}
-    <p><a href="{{ url_for('progress.create') }}" style="color: #2980b9; text-decoration: none;">Add New Progress Entry</a></p>
 {% endif %}
 {% endblock %}

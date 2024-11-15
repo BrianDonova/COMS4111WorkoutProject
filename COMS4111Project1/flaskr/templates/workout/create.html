@@ -1,17 +1,20 @@
 {% extends 'base.html' %}
 
-{% block header %}
-  <h1>{% block title %}New Workout{% endblock %}</h1>
-{% endblock %}
+{% block title %}Add New Workout{% endblock %}
 
 {% block content %}
-  <form method="post">
+<h1>Add a New Workout</h1>
+
+<form method="post" style="max-width: 600px; margin: 0 auto;">
     <label for="name">Workout Name</label>
-    <input name="name" id="name" value="{{ request.form['name'] }}" required>
+    <input type="text" name="name" id="name" required style="width: 100%; padding: 0.5em; margin-bottom: 1em; border: 1px solid #ccc; border-radius: 4px;">
+
     <label for="duration">Duration (minutes)</label>
-    <input name="duration" id="duration" value="{{ request.form['duration'] }}" required>
+    <input type="number" name="duration" id="duration" min="0" step="1" style="width: 100%; padding: 0.5em; margin-bottom: 1em; border: 1px solid #ccc; border-radius: 4px;">
+
     <label for="difficulty_level">Difficulty Level</label>
-    <input name="difficulty_level" id="difficulty_level" value="{{ request.form['difficulty_level'] }}" required>
-    <input type="submit" value="Save">
-  </form>
+    <input type="number" name="difficulty_level" id="difficulty_level" min="1" max="5" style="width: 100%; padding: 0.5em; margin-bottom: 1em; border: 1px solid #ccc; border-radius: 4px;">
+
+    <button type="submit" style="padding: 0.7em 1.5em; background-color: #2980b9; color: white; border: none; border-radius: 4px;">Add Workout</button>
+</form>
 {% endblock %}

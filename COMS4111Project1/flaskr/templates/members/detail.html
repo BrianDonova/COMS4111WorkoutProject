@@ -3,10 +3,16 @@
 {% block title %}Member Details{% endblock %}
 
 {% block content %}
-<h1>{{ member[1] }}</h1>
-<p>Email: {{ member[2] }}</p>
-<p>Age: {{ member[3] }}</p>
-<p>Gender: {{ member[4] }}</p>
-<p>Height: {{ member[5] }} cm</p>
-<p>Weight: {{ member[6] }} kg</p>
+<h1>{{ member['name'] }}</h1>
+<p><strong>Email:</strong> {{ member['email_address'] }}</p>
+<p><strong>Age:</strong> {{ member['age'] }}</p>
+<p><strong>Gender:</strong> {{ member['gender'] }}</p>
+<p><strong>Height:</strong> {{ member['height'] }} cm</p>
+<p><strong>Weight:</strong> {{ member['weight'] }} kg</p>
+
+<form action="{{ url_for('members.delete', member_id=member['member_id']) }}" method="post" style="margin-top: 1em;">
+    <button type="submit" onclick="return confirm('Are you sure you want to delete this member?');">Delete Member</button>
+</form>
+
+<a href="{{ url_for('members.index') }}" style="display: inline-block; margin-top: 1em;">Back to Members List</a>
 {% endblock %}

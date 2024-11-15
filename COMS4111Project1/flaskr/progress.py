@@ -37,3 +37,72 @@ def index():
             """)
         progresses = cursor.fetchall()
     return render_template('progress/index.html', progresses=progresses, search_query=search_query)
+
+
+@bp.route('/create', methods=('GET', 'POST'))
+def create():
+    if request.method == 'POST':
+        member_id = request.form['member_id']
+        workout_id = request.form.get('workout_id')
+        weekly_summary = request.form['weekly_summary']
+        progress_photos_url = request.form['progress_photos_url']
+        
+        db = get_db()
+        try:
+            with db.cursor() as cursor:
+                # Insert into Progress table
+                cursor.execute("""
+                    INSERT INTO Progress (progress_photos_url, weekly_summary)
+                    VALUES (%s, %s)
+                    RETURNING progress_id;
+                """, (progress_photos_url, weekly_summary))
+                progress_id = cursor.fetchone()[0]
+
+                # Link progress with member in Creates table
+                cursor.execute("""
+                    INSERT INTO Creates (member_id, progress_id)
+                    VALUES (%s, %s);
+                """, (member_id, progress_id))
+
+                # Link progress with workout if provided
+                if workout_id:
+                    cursor.execute("""
+                        INSERT INTO Stored (workout_id, progress_id)
+                        VALUES (%s, %s);
+                    """, (workout_id, progress_id))
+
+                db.commit()
+                flash('Progress entry added successfully!', 'success')
+                return redirect(url_for('progress.index'))
+        except Exception as e:
+            db.rollback()
+            flash(f'An error occurred: {str(e)}', 'error')
+            return redirect(url_for('progress.create'))
+
+    # Fetch members and workouts to select from in the form
+    db = get_db()
+    with db.cursor(cursor_factory=DictCursor) as cursor:
+        cursor.execute("SELECT member_id, name FROM Member ORDER BY name;")
+        members = cursor.fetchall()
+        cursor.execute("SELECT workout_id, name FROM Workout ORDER BY name;")
+        workouts = cursor.fetchall()
+    
+    return render_template('progress/create.html', members=members, workouts=workouts)
+
+# Route to delete a progress entry
+@bp.route('/<int:id>/delete', methods=('POST',))
+def delete(id):
+    db = get_db()
+    try:
+        with db.cursor() as cursor:
+            # Remove related entries in Creates and Stored tables
+            cursor.execute("DELETE FROM Creates WHERE progress_id = %s;", (id,))
+            cursor.execute("DELETE FROM Stored WHERE progress_id = %s;", (id,))
+            # Delete the progress entry
+            cursor.execute("DELETE FROM Progress WHERE progress_id = %s;", (id,))
+        db.commit()
+        flash('Progress entry deleted successfully!', 'success')
+    except Exception as e:
+        db.rollback()
+        flash(f'An error occurred: {str(e)}', 'error')
+    return redirect(url_for('progress.index'))

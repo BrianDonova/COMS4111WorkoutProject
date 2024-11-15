@@ -1,23 +1,33 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ workout['name'] }}{% endblock %}
+{% block title %}Workout Details{% endblock %}
 
 {% block content %}
 <h1>{{ workout['name'] }}</h1>
-<p>Duration: {{ workout['duration'] }} minutes</p>
-<p>Difficulty Level: {{ workout['difficulty_level'] }}</p>
+<p><strong>Duration:</strong> {{ workout['duration'] }} minutes</p>
+<p><strong>Difficulty Level:</strong> {{ workout['difficulty_level'] }}</p>
 
 <h2>Exercises</h2>
 {% if exercises %}
     <ul>
         {% for exercise in exercises %}
-        <li>
-            <strong>{{ exercise['name'] }}</strong>
-            <p>Reps: {{ exercise['reps'] }}, Sets: {{ exercise['sets'] }}, Duration: {{ exercise['duration'] }} mins</p>
-        </li>
+            <li>{{ exercise['name'] }}: {{ exercise['reps'] }} reps, {{ exercise['sets'] }} sets, Duration: {{ exercise['duration'] }} mins</li>
         {% endfor %}
     </ul>
 {% else %}
-    <p>No exercises for this workout.</p>
+    <p>No exercises associated with this workout.</p>
 {% endif %}
+
+<h2>Members Who Completed This Workout</h2>
+{% if members_completed %}
+    <ul>
+        {% for member in members_completed %}
+            <li>{{ member['member_name'] }} - {{ member['email_address'] }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No members have completed this workout yet.</p>
+{% endif %}
+
+<a href="{{ url_for('workout.index') }}" style="display: inline-block; margin-top: 1em;">Back to Workouts</a>
 {% endblock %}

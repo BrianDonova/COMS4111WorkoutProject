@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Member{% endblock %}
+
+{% block content %}
+<h1>Create a New Member</h1>
+
+<form method="post">
+    <label for="name">Name</label><br>
+    <input type="text" name="name" id="name" required><br><br>
+
+    <label for="email_address">Email Address</label><br>
+    <input type="email" name="email_address" id="email_address" required><br><br>
+
+    <label for="age">Age</label><br>
+    <input type="number" name="age" id="age"><br><br>
+
+    <label for="gender">Gender</label><br>
+    <select name="gender" id="gender">
+        <option value="">--Select--</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <!-- Add other options as needed -->
+    </select><br><br>
+
+    <label for="height">Height (cm)</label><br>
+    <input type="number" name="height" id="height"><br><br>
+
+    <label for="weight">Weight (kg)</label><br>
+    <input type="number" name="weight" id="weight"><br><br>
+
+    <label for="trainer_id">Trainer ID (optional)</label><br>
+    <input type="number" name="trainer_id" id="trainer_id"><br><br>
+
+    <button type="submit">Create Member</button>
+</form>
+{% endblock %}

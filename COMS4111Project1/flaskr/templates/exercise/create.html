@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Exercise{% endblock %}
+
+{% block content %}
+<h1>Create a New Exercise</h1>
+
+<!-- Display flashed messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
+<!-- Exercise Form -->
+<form method="post">
+    <label for="name">Exercise Name</label><br>
+    <input type="text" name="name" id="name" required><br><br>
+
+    <label for="reps">Reps</label><br>
+    <input type="number" name="reps" id="reps"><br><br>
+
+    <label for="sets">Sets</label><br>
+    <input type="number" name="sets" id="sets"><br><br>
+
+    <label for="workout_id">Workout</label><br>
+    <select name="workout_id" id="workout_id" required>
+        <option value="">Select a workout</option>
+        {% for workout in workouts %}
+            <option value="{{ workout['workout_id'] }}">{{ workout['name'] }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <button type="submit" style="padding: 0.5em 1em; background-color: #2980b9; color: white; border: none; border-radius: 4px;">Create Exercise</button>
+</form>
+
+<p><a href="{{ url_for('exercise.index') }}" style="text-decoration: none; color: #2980b9;">Back to Exercises</a></p>
+{% endblock %}
