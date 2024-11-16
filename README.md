@@ -19,4 +19,5 @@ Our project designs a front-end to help gym members log, track, and analyze thei
 │   └── schema.sql          # SQL schema
 ├── instance/               # Instance folder for sensitive configurations
 ├── .gitignore              # Ignored files
-├── README.md               # Project documentation```
+├── README.md               # Project documentation
+```
