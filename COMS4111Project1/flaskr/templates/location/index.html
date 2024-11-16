@@ -15,7 +15,6 @@
     <table style="width: 100%; border-collapse: collapse;">
         <thead>
             <tr>
-                <th style="padding: 0.75em; border-bottom: 2px solid #ddd;">ID</th>
                 <th style="padding: 0.75em; border-bottom: 2px solid #ddd;">Amenities</th>
                 <th style="padding: 0.75em; border-bottom: 2px solid #ddd;">Capacity</th>
             </tr>
@@ -23,7 +22,6 @@
         <tbody>
             {% for location in locations %}
             <tr>
-                <td style="padding: 0.75em; border-bottom: 1px solid #eee;">{{ location['location_id'] }}</td>
                 <td style="padding: 0.75em; border-bottom: 1px solid #eee;">{{ location['amenities'] }}</td>
                 <td style="padding: 0.75em; border-bottom: 1px solid #eee;">{{ location['capacity'] }}</td>
             </tr>

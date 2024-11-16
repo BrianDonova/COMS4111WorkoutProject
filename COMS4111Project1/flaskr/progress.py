@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from .db import get_db
 from psycopg2.extras import DictCursor
 from flaskr.auth import login_required
@@ -50,7 +50,6 @@ def create():
         db = get_db()
         try:
             with db.cursor() as cursor:
-                # Insert into Progress table
                 cursor.execute("""
                     INSERT INTO Progress (progress_photos_url, weekly_summary)
                     VALUES (%s, %s)
@@ -58,13 +57,11 @@ def create():
                 """, (progress_photos_url, weekly_summary))
                 progress_id = cursor.fetchone()[0]
 
-                # Link progress with member in Creates table
                 cursor.execute("""
                     INSERT INTO Creates (member_id, progress_id)
                     VALUES (%s, %s);
                 """, (member_id, progress_id))
 
-                # Link progress with workout if provided
                 if workout_id:
                     cursor.execute("""
                         INSERT INTO Stored (workout_id, progress_id)
@@ -79,7 +76,6 @@ def create():
             flash(f'An error occurred: {str(e)}', 'error')
             return redirect(url_for('progress.create'))
 
-    # Fetch members and workouts to select from in the form
     db = get_db()
     with db.cursor(cursor_factory=DictCursor) as cursor:
         cursor.execute("SELECT member_id, name FROM Member ORDER BY name;")
@@ -89,16 +85,13 @@ def create():
     
     return render_template('progress/create.html', members=members, workouts=workouts)
 
-# Route to delete a progress entry
 @bp.route('/<int:id>/delete', methods=('POST',))
 def delete(id):
     db = get_db()
     try:
         with db.cursor() as cursor:
-            # Remove related entries in Creates and Stored tables
             cursor.execute("DELETE FROM Creates WHERE progress_id = %s;", (id,))
             cursor.execute("DELETE FROM Stored WHERE progress_id = %s;", (id,))
-            # Delete the progress entry
             cursor.execute("DELETE FROM Progress WHERE progress_id = %s;", (id,))
         db.commit()
         flash('Progress entry deleted successfully!', 'success')

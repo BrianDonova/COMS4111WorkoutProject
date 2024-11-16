@@ -23,7 +23,6 @@ def index():
 def view(exercise_id):
     db = get_db()
     with db.cursor(cursor_factory=DictCursor) as cursor:
-        # Get exercise details and associated workout
         cursor.execute("""
             SELECT e.exercise_id, e.name, e.reps, e.sets, w.name AS workout_name
             FROM Exercises e

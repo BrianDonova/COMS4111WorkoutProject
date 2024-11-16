@@ -31,7 +31,6 @@ def index():
 def view(id):
     db = get_db()
     with db.cursor(cursor_factory=DictCursor) as cursor:
-        # Fetch workout details
         cursor.execute("""
             SELECT w.workout_id, w.name, w.duration, w.difficulty_level
             FROM Workout w
@@ -39,7 +38,6 @@ def view(id):
         """, (id,))
         workout = cursor.fetchone()
 
-        # Fetch exercises associated with the workout
         cursor.execute("""
             SELECT e.exercise_id, e.name, e.reps, e.sets, e.duration
             FROM Exercises e
@@ -47,7 +45,6 @@ def view(id):
         """, (id,))
         exercises = cursor.fetchall()
 
-        # Fetch members who completed the workout
         cursor.execute("""
             SELECT m.name AS member_name, m.email_address
             FROM Completes c
@@ -60,7 +57,7 @@ def view(id):
 
 
 @bp.route('/create', methods=('GET', 'POST'))
-def create():  # Removed `@login_required` decorator
+def create(): 
     if request.method == 'POST':
         name = request.form['name']
         duration = request.form['duration']
@@ -75,7 +72,6 @@ def create():  # Removed `@login_required` decorator
         else:
             db = get_db()
             with db.cursor() as cursor:
-                # Insert the new workout
                 cursor.execute(
                     '''
                     INSERT INTO Workout (name, duration, difficulty_level)
@@ -153,9 +149,7 @@ def delete(id):
     db = get_db()
     try:
         with db.cursor() as cursor:
-            # Delete associated entries from Completes table
             cursor.execute('DELETE FROM Completes WHERE workout_id = %s;', (id,))
-            # Delete the workout
             cursor.execute('DELETE FROM Workout WHERE workout_id = %s;', (id,))
         db.commit()
         flash('Workout deleted successfully!', 'success')

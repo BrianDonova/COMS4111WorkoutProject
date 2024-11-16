@@ -96,7 +96,6 @@ def add_trainer():
         certifications = request.form['certifications']
         specialization = request.form['specialization']
 
-        # Error validation
         error = None
         if not experience_level:
             error = 'Experience level is required.'

@@ -91,7 +91,6 @@ def create():
                     db.rollback()
                     flash(f'An error occurred: {e}', 'error')
     
-    # Get all workouts for the dropdown menu
     with db.cursor(cursor_factory=DictCursor) as cursor:
         cursor.execute("SELECT workout_id, name FROM Workout;")
         workouts = cursor.fetchall()

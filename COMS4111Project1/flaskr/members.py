@@ -118,15 +118,10 @@ def delete(member_id):
     db = get_db()
     try:
         with db.cursor() as cursor:
-            # Delete from Coaches table if there is a foreign key relationship
             cursor.execute("DELETE FROM Coaches WHERE member_id = %s;", (member_id,))
-            # Delete from Tracks table (assuming nutrition tracking)
             cursor.execute("DELETE FROM Tracks WHERE member_id = %s;", (member_id,))
-            # Delete from Completes table (assuming workout tracking)
             cursor.execute("DELETE FROM Completes WHERE member_id = %s;", (member_id,))
-            # Delete from Creates table (assuming progress entries)
             cursor.execute("DELETE FROM Creates WHERE member_id = %s;", (member_id,))
-            # Delete the member
             cursor.execute("DELETE FROM Member WHERE member_id = %s;", (member_id,))
         db.commit()
         flash('Member deleted successfully!', 'success')

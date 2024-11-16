@@ -68,17 +68,15 @@ def add_nutrition():
 
         return redirect(url_for('nutrition.index'))
 
-    return render_template('nutrition/add.html')
+    return render_template('nutrition/create.html')
 
-# Route to delete a nutrition entry
+
 @bp.route('/<int:nutrition_id>/delete', methods=('POST',))
 def delete_nutrition(nutrition_id):
     db = get_db()
     try:
         with db.cursor() as cursor:
-            # Delete associated entry in Tracks table
             cursor.execute("DELETE FROM Tracks WHERE nutrition_id = %s;", (nutrition_id,))
-            # Delete from Nutrition table
             cursor.execute("DELETE FROM Nutrition WHERE nutrition_id = %s;", (nutrition_id,))
         db.commit()
         flash('Nutrition entry deleted successfully!', 'success')

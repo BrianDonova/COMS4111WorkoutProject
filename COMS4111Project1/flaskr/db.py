@@ -14,7 +14,7 @@ def get_db():
             password="bcd2136",  
             host="w4111.cisxo09blonu.us-east-1.rds.amazonaws.com",  
             port="5432",
-            cursor_factory=DictCursor  # Specify DictCursor here
+            cursor_factory=DictCursor 
         )
         g.db.autocommit = True 
     
